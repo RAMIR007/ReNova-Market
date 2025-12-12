@@ -1,50 +1,9 @@
 import Link from "next/link"
 import { ProductCard } from "@/components/products/ProductCard"
 import { ArrowRight } from "lucide-react"
+import { PRODUCTS } from "@/lib/placeholder-data"
 
-// Mock Data for layout dev
-const FEATURED_PRODUCTS = [
-  {
-    id: 1,
-    name: "Vintage Linen Shirt",
-    slug: "vintage-linen-shirt",
-    priceUSD: 25.00,
-    image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=1000&auto=format&fit=crop",
-    category: "Men's Fashion",
-    condition: "LIKE_NEW",
-    type: 'FASHION' as const
-  },
-  {
-    id: 2,
-    name: "Handwoven Palm Basket",
-    slug: "palm-basket",
-    priceUSD: 15.00,
-    image: "https://images.unsplash.com/photo-1584107858602-5dba6cb3d47b?q=80&w=1000&auto=format&fit=crop", // Replaced broken link
-    category: "Home Decor",
-    origin: "San Francisco de Paula",
-    type: 'CRAFT' as const
-  },
-  {
-    id: 3,
-    name: "Leather Satchel Bag",
-    slug: "leather-satchel",
-    priceUSD: 45.00,
-    image: "https://images.unsplash.com/photo-1590874102752-ce335b869271?q=80&w=1000&auto=format&fit=crop", // Replaced link just in case
-    category: "Accessories",
-    condition: "GOOD",
-    type: 'FASHION' as const
-  },
-  {
-    id: 4,
-    name: "Ceramic Vase 'Havana'",
-    slug: "ceramic-vase",
-    priceUSD: 30.00,
-    image: "https://images.unsplash.com/photo-1612196808214-b7e239e5f6b7?q=80&w=1000&auto=format&fit=crop", // Kept (seems ok, but if broken will replace)
-    category: "Artisan Crafts",
-    origin: "Local Artisan",
-    type: 'CRAFT' as const
-  }
-]
+const FEATURED_PRODUCTS = PRODUCTS.slice(0, 4);
 
 export default function Home() {
   return (
@@ -56,7 +15,7 @@ export default function Home() {
           {/* Ideally a video or high-res image of Havana/Fashion */}
           <img
             src="https://images.unsplash.com/photo-1500057630393-27c598d1a120?q=80&w=2621&auto=format&fit=crop"
-            alt="Havana Vibes"
+            alt="Vibras de La Habana"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-stone-950/80 via-transparent to-transparent" />
@@ -67,21 +26,21 @@ export default function Home() {
             ReNova <span className="text-primary-foreground italic font-light">Market</span>
           </h1>
           <p className="text-lg md:text-xl text-stone-200/90 font-light max-w-xl mx-auto">
-            Authentic Cuban heritage meets exclusive sustainable fashion.
-            Curated in San Francisco de Paula.
+            El auténtico patrimonio cubano se une a la moda sostenible exclusiva.
+            Curado en San Francisco de Paula.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
             <Link
               href="/shop?category=fashion"
               className="inline-flex h-12 items-center justify-center rounded-sm bg-primary px-8 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
-              Shop Fashion
+              Comprar Moda
             </Link>
             <Link
-              href="/shop?category=crafts"
+              href="/conarte"
               className="inline-flex h-12 items-center justify-center rounded-sm border border-input bg-background/10 backdrop-blur-sm px-8 text-sm font-medium text-white transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             >
-              Discover Crafts
+              Descubrir Artesanía
             </Link>
           </div>
         </div>
@@ -90,10 +49,10 @@ export default function Home() {
       {/* Philosophy Section */}
       <section className="py-20 bg-secondary/50">
         <div className="container mx-auto px-4 md:px-6 text-center max-w-3xl space-y-6">
-          <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">Curated for the Conscious</h2>
+          <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">Curado para el Consumidor Consciente</h2>
           <p className="text-muted-foreground text-lg leading-relaxed">
-            At ReNova, we believe in the beauty of the second life. We bring you premium fashion pieces sourced with care,
-            alongside the raw, authentic beauty of Cuban craftsmanship. Every piece tells a story of renewal and identity.
+            En ReNova, creemos en la belleza de una segunda vida. Te traemos piezas de moda premium seleccionadas con cuidado,
+            junto con la auténtica belleza de la artesanía cubana. Cada pieza cuenta una historia de renovación e identidad.
           </p>
         </div>
       </section>
@@ -102,9 +61,9 @@ export default function Home() {
       <section className="py-20 bg-background">
         <div className="container mx-auto px-4 md:px-6 space-y-12">
           <div className="flex items-center justify-between">
-            <h2 className="font-serif text-3xl font-bold">New Arrivals</h2>
+            <h2 className="font-serif text-3xl font-bold">Nuevas Llegadas</h2>
             <Link href="/shop" className="group flex items-center gap-2 text-primary hover:text-primary/80 transition-colors text-sm font-medium">
-              View All <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              Ver Todo <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
 

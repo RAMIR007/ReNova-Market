@@ -17,8 +17,8 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "ReNova Market | Premium Fashion & Crafts",
-  description: "Exclusive second-hand fashion and authentic Cuban crafts from San Francisco de Paula.",
+  title: "ReNova Market | Moda Premium y Artesanía",
+  description: "Moda de segunda mano exclusiva y auténtica artesanía cubana desde San Francisco de Paula.",
 };
 
 export default function RootLayout({
@@ -27,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="es">
       <body
         className={`${inter.variable} ${playfair.variable} antialiased flex flex-col min-h-screen`}
       >

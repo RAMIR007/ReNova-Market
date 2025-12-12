@@ -14,31 +14,31 @@ export function Footer() {
                             <span className="font-serif text-xl font-bold tracking-tight">ReNovaMarket</span>
                         </Link>
                         <p className="max-w-xs text-sm text-muted-foreground">
-                            Connecting Cuban heritage with modern sustainable fashion. Located in the heart of San Francisco de Paula.
+                            Conectando la herencia cubana con la moda sostenible moderna. Ubicados en el corazón de San Francisco de Paula.
                         </p>
                     </div>
 
                     <div>
-                        <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground">Shop</h3>
+                        <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground">Tienda</h3>
                         <ul className="space-y-2 text-sm text-muted-foreground">
-                            <li><Link href="/shop?category=fashion" className="hover:text-primary transition-colors">Premium Second Hand</Link></li>
-                            <li><Link href="/shop?category=crafts" className="hover:text-primary transition-colors">Local Crafts</Link></li>
-                            <li><Link href="/shop/new-arrivals" className="hover:text-primary transition-colors">New Arrivals</Link></li>
-                            <li><Link href="/sales" className="hover:text-primary transition-colors">Sales</Link></li>
+                            <li><Link href="/shop?category=fashion" className="hover:text-primary transition-colors">Moda Segunda Mano Premium</Link></li>
+                            <li><Link href="/shop?category=crafts" className="hover:text-primary transition-colors">Artesanía Local</Link></li>
+                            <li><Link href="/shop/new-arrivals" className="hover:text-primary transition-colors">Lo Último</Link></li>
+                            <li><Link href="/sales" className="hover:text-primary transition-colors">Ofertas</Link></li>
                         </ul>
                     </div>
 
                     <div>
-                        <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground">Support</h3>
+                        <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground">Soporte</h3>
                         <ul className="space-y-2 text-sm text-muted-foreground">
-                            <li><Link href="/faq" className="hover:text-primary transition-colors">FAQ</Link></li>
-                            <li><Link href="/shipping" className="hover:text-primary transition-colors">Shipping & Returns</Link></li>
-                            <li><Link href="/contact" className="hover:text-primary transition-colors">Contact Us</Link></li>
+                            <li><Link href="/faq" className="hover:text-primary transition-colors">Preguntas Frecuentes</Link></li>
+                            <li><Link href="/shipping" className="hover:text-primary transition-colors">Envíos y Devoluciones</Link></li>
+                            <li><Link href="/contact" className="hover:text-primary transition-colors">Contáctanos</Link></li>
                         </ul>
                     </div>
 
                     <div>
-                        <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground">Visit Us</h3>
+                        <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground">Visítanos</h3>
                         <address className="not-italic text-sm text-muted-foreground mb-4">
                             San Francisco de Paula,<br />
                             San Miguel del Padrón,<br />
@@ -53,10 +53,10 @@ export function Footer() {
                 </div>
 
                 <div className="mt-12 flex flex-col items-center justify-between border-t border-border pt-8 text-xs text-muted-foreground md:flex-row">
-                    <p>&copy; {new Date().getFullYear()} ReNova Market. All rights reserved.</p>
+                    <p>&copy; {new Date().getFullYear()} ReNova Market. Todos los derechos reservados.</p>
                     <div className="mt-4 flex gap-4 md:mt-0">
-                        <Link href="/privacy" className="hover:text-foreground">Privacy Policy</Link>
-                        <Link href="/terms" className="hover:text-foreground">Terms of Service</Link>
+                        <Link href="/privacy" className="hover:text-foreground">Política de Privacidad</Link>
+                        <Link href="/terms" className="hover:text-foreground">Términos de Servicio</Link>
                     </div>
                 </div>
             </div>

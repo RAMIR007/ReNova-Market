@@ -41,13 +41,20 @@ export function ProductCard({
                 />
                 {condition && (
                     <span className="absolute top-2 left-2 bg-black/70 text-white text-[10px] px-2 py-1 uppercase tracking-wider font-semibold backdrop-blur-sm rounded">
-                        {condition.replace('_', ' ')}
+                        {condition === 'LIKE_NEW' ? 'COMO NUEVO' : condition === 'GOOD' ? 'BUENO' : condition === 'FAIR' ? 'REGULAR' : condition}
                     </span>
                 )}
-                {type === 'CRAFT' && origin && (
-                    <span className="absolute top-2 left-2 bg-primary/90 text-white text-[10px] px-2 py-1 uppercase tracking-wider font-semibold backdrop-blur-sm rounded">
-                        {origin}
-                    </span>
+                {type === 'CRAFT' && (
+                    <div className="absolute top-2 left-2 flex flex-col items-start gap-1">
+                        {origin && (
+                            <span className="bg-primary/90 text-white text-[10px] px-2 py-1 uppercase tracking-wider font-semibold backdrop-blur-sm rounded">
+                                {origin === 'Local Artisan' ? 'Artesano Local' : origin}
+                            </span>
+                        )}
+                        <span className="bg-amber-600/90 text-white text-[10px] px-2 py-1 uppercase tracking-wider font-semibold backdrop-blur-sm rounded shadow-sm">
+                            ConArte Boutique
+                        </span>
+                    </div>
                 )}
             </div>
 
@@ -62,7 +69,7 @@ export function ProductCard({
                 <p className="text-sm text-muted-foreground">{category}</p>
                 <div className="mt-auto flex items-center justify-between pt-2">
                     <p className="text-lg font-bold text-foreground">
-                        ${priceUSD.toFixed(2)} USD
+                        ${priceUSD.toFixed(2)}
                     </p>
                 </div>
             </div>

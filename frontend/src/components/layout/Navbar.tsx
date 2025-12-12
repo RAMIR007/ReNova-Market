@@ -17,10 +17,11 @@ export function Navbar() {
 
                 {/* Desktop Nav */}
                 <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
-                    <Link href="/" className="transition-colors hover:text-primary">Home</Link>
-                    <Link href="/shop" className="transition-colors hover:text-primary">Shop</Link>
-                    <Link href="/stories" className="transition-colors hover:text-primary">Stories</Link>
-                    <Link href="/about" className="transition-colors hover:text-primary">About</Link>
+                    <Link href="/" className="transition-colors hover:text-primary">Inicio</Link>
+                    <Link href="/shop" className="transition-colors hover:text-primary">Tienda</Link>
+                    <Link href="/conarte" className="transition-colors hover:text-amber-600 font-serif font-semibold text-amber-700">ConArte</Link>
+                    <Link href="/stories" className="transition-colors hover:text-primary">Historias</Link>
+                    <Link href="/about" className="transition-colors hover:text-primary">Nosotros</Link>
                 </div>
 
                 {/* Actions */}
