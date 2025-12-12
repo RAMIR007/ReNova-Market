@@ -9,7 +9,7 @@ const FEATURED_PRODUCTS = [
     name: "Vintage Linen Shirt",
     slug: "vintage-linen-shirt",
     priceUSD: 25.00,
-    image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=1888&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=1000&auto=format&fit=crop",
     category: "Men's Fashion",
     condition: "LIKE_NEW",
     type: 'FASHION' as const
@@ -19,7 +19,7 @@ const FEATURED_PRODUCTS = [
     name: "Handwoven Palm Basket",
     slug: "palm-basket",
     priceUSD: 15.00,
-    image: "https://images.unsplash.com/photo-1616606004944-77db65367c2d?q=80&w=2696&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1584107858602-5dba6cb3d47b?q=80&w=1000&auto=format&fit=crop", // Replaced broken link
     category: "Home Decor",
     origin: "San Francisco de Paula",
     type: 'CRAFT' as const
@@ -29,7 +29,7 @@ const FEATURED_PRODUCTS = [
     name: "Leather Satchel Bag",
     slug: "leather-satchel",
     priceUSD: 45.00,
-    image: "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?q=80&w=2669&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1590874102752-ce335b869271?q=80&w=1000&auto=format&fit=crop", // Replaced link just in case
     category: "Accessories",
     condition: "GOOD",
     type: 'FASHION' as const
@@ -39,7 +39,7 @@ const FEATURED_PRODUCTS = [
     name: "Ceramic Vase 'Havana'",
     slug: "ceramic-vase",
     priceUSD: 30.00,
-    image: "https://images.unsplash.com/photo-1612196808214-b7e239e5f6b7?q=80&w=2670&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1612196808214-b7e239e5f6b7?q=80&w=1000&auto=format&fit=crop", // Kept (seems ok, but if broken will replace)
     category: "Artisan Crafts",
     origin: "Local Artisan",
     type: 'CRAFT' as const
