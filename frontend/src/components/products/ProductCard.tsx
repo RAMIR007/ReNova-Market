@@ -1,35 +1,31 @@
 import Image from "next/image"
 import Link from "next/link"
 import { cn } from "@/lib/utils"
+import { Product } from "@/lib/api"
+import { AddToCartButton } from "./AddToCartButton"
 
 interface ProductCardProps {
-    id: number;
-    name: string;
-    slug: string;
-    priceUSD: number;
-    // TODO: Add dynamic currency toggle support later
-    image: string;
-    category: string;
-    condition?: string; // For Fashion
-    origin?: string;    // For Crafts
+    product: Product;
     className?: string;
-    type: 'FASHION' | 'CRAFT';
 }
 
 export function ProductCard({
-    id,
-    name,
-    slug,
-    priceUSD,
-    image,
-    category,
-    condition,
-    origin,
+    product,
     className,
-    type
 }: ProductCardProps) {
+    const {
+        name,
+        slug,
+        price_usd,
+        image,
+        category_name,
+        condition,
+        origin,
+        product_type
+    } = product;
+
     return (
-        <div className={cn("group relative flex flex-col overflow-hidden rounded-md border border-transparent transition-all hover:border-border hover:shadow-sm", className)}>
+        <div className={cn("group relative flex flex-col overflow-hidden rounded-md border border-transparent transition-all hover:border-border hover:shadow-sm bg-card", className)}>
             {/* Image Container */}
             <div className="aspect-[3/4] overflow-hidden bg-secondary relative">
                 <Image
@@ -44,11 +40,11 @@ export function ProductCard({
                         {condition === 'LIKE_NEW' ? 'COMO NUEVO' : condition === 'GOOD' ? 'BUENO' : condition === 'FAIR' ? 'REGULAR' : condition}
                     </span>
                 )}
-                {type === 'CRAFT' && (
+                {product_type === 'CRAFT' && (
                     <div className="absolute top-2 left-2 flex flex-col items-start gap-1">
                         {origin && (
                             <span className="bg-primary/90 text-white text-[10px] px-2 py-1 uppercase tracking-wider font-semibold backdrop-blur-sm rounded">
-                                {origin === 'Local Artisan' ? 'Artesano Local' : origin}
+                                {origin}
                             </span>
                         )}
                         <span className="bg-amber-600/90 text-white text-[10px] px-2 py-1 uppercase tracking-wider font-semibold backdrop-blur-sm rounded shadow-sm">
@@ -56,6 +52,8 @@ export function ProductCard({
                         </span>
                     </div>
                 )}
+
+                {/* Quick Add Button (Optional, can be added later) */}
             </div>
 
             {/* Content */}
@@ -66,10 +64,10 @@ export function ProductCard({
                         {name}
                     </Link>
                 </h3>
-                <p className="text-sm text-muted-foreground">{category}</p>
+                <p className="text-sm text-muted-foreground">{category_name}</p>
                 <div className="mt-auto flex items-center justify-between pt-2">
                     <p className="text-lg font-bold text-foreground">
-                        ${priceUSD.toFixed(2)}
+                        ${price_usd.toFixed(2)}
                     </p>
                 </div>
             </div>

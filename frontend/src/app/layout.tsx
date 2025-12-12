@@ -3,6 +3,7 @@ import { Inter, Playfair_Display } from "next/font/google"; // Premium fonts
 import "./globals.css";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { CartProvider } from "@/lib/cart-context";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -31,11 +32,13 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${playfair.variable} antialiased flex flex-col min-h-screen`}
       >
-        <Navbar />
-        <main className="flex-1">
-          {children}
-        </main>
-        <Footer />
+        <CartProvider>
+          <Navbar />
+          <main className="flex-1">
+            {children}
+          </main>
+          <Footer />
+        </CartProvider>
       </body>
     </html>
   );

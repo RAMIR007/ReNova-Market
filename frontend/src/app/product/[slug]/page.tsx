@@ -1,20 +1,21 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { PRODUCTS } from "@/lib/placeholder-data";
+import { getProduct } from "@/lib/api"; // Updated import
 import { ArrowLeft, ShoppingBag, Truck, ShieldCheck } from "lucide-react";
+import { AddToCartButton } from "@/components/products/AddToCartButton";
 
 export default async function ProductPage(props: {
     params: Promise<{ slug: string }>;
 }) {
     const params = await props.params;
-    const product = PRODUCTS.find((p) => p.slug === params.slug);
+    const product = await getProduct(params.slug);
 
     if (!product) {
         notFound();
     }
 
-    const isCraft = product.type === "CRAFT";
+    const isCraft = product.product_type === "CRAFT"; // Updated accessor
 
     return (
         <div className="container mx-auto px-4 md:px-6 py-12">
@@ -31,7 +32,7 @@ export default async function ProductPage(props: {
                 <div className="space-y-4">
                     <div className="relative aspect-[3/4] overflow-hidden rounded-lg bg-secondary border border-border">
                         <Image
-                            src={product.image}
+                            src={product.image || "/placeholder.jpg"}
                             alt={product.name}
                             fill
                             className="object-cover"
@@ -67,7 +68,7 @@ export default async function ProductPage(props: {
                         </h1>
 
                         <div className="flex items-center gap-2 text-muted-foreground text-sm">
-                            <span>{product.category}</span>
+                            <span>{product.category_name}</span>
                             {product.condition && (
                                 <>
                                     <span>•</span>
@@ -84,7 +85,7 @@ export default async function ProductPage(props: {
                     </div>
 
                     <div className="text-3xl font-bold text-foreground">
-                        ${product.priceUSD.toFixed(2)}
+                        ${product.price_usd.toFixed(2)}
                     </div>
 
                     <div className="prose prose-stone text-muted-foreground">
@@ -92,10 +93,7 @@ export default async function ProductPage(props: {
                     </div>
 
                     <div className="space-y-4 pt-6 border-t border-border">
-                        <button className="w-full h-12 bg-primary text-primary-foreground font-medium rounded-md hover:bg-primary/90 transition-colors flex items-center justify-center gap-2">
-                            <ShoppingBag className="h-5 w-5" />
-                            Añadir al Carrito
-                        </button>
+                        <AddToCartButton product={product} />
                         <p className="text-xs text-center text-muted-foreground">
                             {isCraft ? "Envío directo desde el taller del artesano." : "Inspeccionado y verificado por ReNova Market."}
                         </p>

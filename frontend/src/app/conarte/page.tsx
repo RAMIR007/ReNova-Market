@@ -1,10 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ProductCard } from "@/components/products/ProductCard";
-import { PRODUCTS } from "@/lib/placeholder-data";
+import { getConArteProducts } from "@/lib/api";
 
-export default function ConArtePage() {
-    const craftProducts = PRODUCTS.filter((p) => p.type === "CRAFT");
+export const dynamic = 'force-dynamic';
+
+export default async function ConArtePage() {
+    const craftProducts = await getConArteProducts();
 
     return (
         <div className="min-h-screen bg-stone-950 text-amber-50">
@@ -52,12 +54,7 @@ export default function ConArtePage() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
                         {craftProducts.map((product) => (
                             <div key={product.id} className="group">
-                                {/* Wrapping standard card but could customize heavily here if needed. 
-                        Using ProductCard but passing specific styling could be constrained, 
-                        so wrapping it to ensure dark mode context works well if card is transparent.
-                        Currently Card has some hardcoded colors, so it might stand out. 
-                        Let's verify visual result. */}
-                                <ProductCard {...product} />
+                                <ProductCard product={product} />
                             </div>
                         ))}
                     </div>
