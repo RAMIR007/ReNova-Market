@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
+import db from "@/lib/db";
+import { Product as PrismaProduct, Category, ProductType, Condition } from "@prisma/client";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
-
-// Types matching Django Serializer
+// Types matching Frontend components
 export interface Product {
     id: number;
     name: string;
@@ -19,7 +19,7 @@ export interface Product {
     // Details
     size?: string;
     brand?: string;
-    condition?: 'NEW' | 'LIKE_NEW' | 'GOOD' | 'FAIR'; // Verify exact strings in models if needed
+    condition?: 'NEW' | 'LIKE_NEW' | 'GOOD' | 'FAIR';
     material?: string;
     origin?: string;
     created_at: string;
@@ -32,48 +32,98 @@ export interface PaginatedResponse<T> {
     results: T[];
 }
 
-// Fetch helper
-async function fetchAPI<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const res = await fetch(`${API_URL}/${endpoint}`, {
-        ...options,
-        // Ensure we don't cache aggressively during dev
-        cache: 'no-store',
-    });
-
-    if (!res.ok) {
-        throw new Error(`API Error: ${res.statusText}`);
-    }
-
-    return res.json();
+// Helper to map Prisma result to Frontend Product interface
+function mapPrismaProduct(p: PrismaProduct & { category: Category | null }): Product {
+    return {
+        id: p.id,
+        name: p.name,
+        slug: p.slug,
+        description: p.description,
+        product_type: p.product_type as 'FASHION' | 'CRAFT',
+        price_usd: p.price_usd.toNumber(),
+        image: p.image,
+        stock: p.stock,
+        is_featured: p.is_featured,
+        category: p.category_id || 0,
+        category_name: p.category?.name || "Sin Categoría",
+        size: p.size || undefined,
+        brand: p.brand || undefined,
+        condition: (p.condition as 'NEW' | 'LIKE_NEW' | 'GOOD' | 'FAIR') || undefined,
+        material: p.material || undefined,
+        origin: p.origin || undefined,
+        created_at: p.created_at.toISOString(),
+    };
 }
 
 // Products API
 export async function getProducts(params?: URLSearchParams): Promise<PaginatedResponse<Product>> {
-    const queryString = params ? `?${params.toString()}` : "";
-    return fetchAPI<PaginatedResponse<Product>>(`products/${queryString}`);
+    const where: any = { is_active: true };
+
+    if (params) {
+        if (params.get('product_type')) {
+            where.product_type = params.get('product_type') as ProductType;
+        }
+        if (params.get('is_featured') === 'true') {
+            where.is_featured = true;
+        }
+        // Add more filters as needed
+    }
+
+    const orderBy: any = {};
+    if (params?.get('ordering')) {
+        const ordering = params.get('ordering')!;
+        if (ordering === 'price_usd') orderBy.price_usd = 'asc';
+        if (ordering === '-price_usd') orderBy.price_usd = 'desc';
+        if (ordering === '-created_at') orderBy.created_at = 'desc';
+    } else {
+        orderBy.created_at = 'desc';
+    }
+
+    const [prismaProducts, total] = await db.$transaction([
+        db.product.findMany({
+            where,
+            orderBy,
+            include: { category: true },
+        }),
+        db.product.count({ where }),
+    ]);
+
+    const results = prismaProducts.map(mapPrismaProduct);
+
+    return {
+        count: total,
+        next: null, // Pagination not fully implemented in this MVP replacement
+        previous: null,
+        results,
+    };
 }
 
 export async function getProduct(slug: string): Promise<Product | null> {
-    try {
-        return await fetchAPI<Product>(`products/${slug}/`);
-    } catch (error) {
-        console.error(`Failed to fetch product ${slug}`, error);
-        return null;
-    }
+    const p = await db.product.findUnique({
+        where: { slug },
+        include: { category: true },
+    });
+
+    if (!p) return null;
+    return mapPrismaProduct(p);
 }
 
 export async function getFeaturedProducts(): Promise<Product[]> {
-    const data = await getProducts(new URLSearchParams({ is_featured: "true" }));
-    return data.results.slice(0, 4); // Limit to 4 for the home page
+    const products = await db.product.findMany({
+        where: { is_active: true, is_featured: true },
+        take: 4,
+        orderBy: { created_at: 'desc' },
+        include: { category: true },
+    });
+    return products.map(mapPrismaProduct);
 }
 
 export async function getConArteProducts(): Promise<Product[]> {
-    const data = await getProducts(new URLSearchParams({ product_type: "CRAFT" }));
-    return data.results;
+    const products = await db.product.findMany({
+        where: { is_active: true, product_type: 'CRAFT' },
+        orderBy: { created_at: 'desc' },
+        include: { category: true },
+    });
+    return products.map(mapPrismaProduct);
 }
 
-// Helper to map backend product to the shape used by frontend components if needed
-// Or we can just update components to use the new shape.
-// Current shape in placeholder-data: priceUSD, type, condition...
-// New shape: price_usd, product_type, condition...
-// I will update components to match the API response directly.
