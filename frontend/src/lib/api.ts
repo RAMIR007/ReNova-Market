@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
-import { PRODUCTS, Product as MockProduct } from "@/lib/placeholder-data";
+import db from "@/lib/db";
+import { Product as PrismaProduct, Category, ProductType, Condition } from "@prisma/client";
 
 // Types matching Frontend components
 export interface Product {
@@ -31,51 +32,66 @@ export interface PaginatedResponse<T> {
     results: T[];
 }
 
-// Helper to map Mock result to Frontend Product interface
-function mapMockProduct(p: MockProduct): Product {
+// Helper to map Prisma result to Frontend Product interface
+function mapPrismaProduct(p: PrismaProduct & { category: Category | null }): Product {
     return {
         id: p.id,
         name: p.name,
         slug: p.slug,
-        description: p.description || "",
-        product_type: p.type,
-        price_usd: p.priceUSD,
+        description: p.description,
+        product_type: p.product_type as 'FASHION' | 'CRAFT',
+        price_usd: p.price_usd.toNumber(),
         image: p.image,
-        stock: 10, // Mock stock
-        is_featured: true, // Mock featured
-        category: 0, // Mock ID
-        category_name: p.category,
-        condition: p.condition,
-        origin: p.origin,
-        created_at: new Date().toISOString(),
+        stock: p.stock,
+        is_featured: p.is_featured,
+        category: p.category_id || 0,
+        category_name: p.category?.name || "Sin Categoría",
+        size: p.size || undefined,
+        brand: p.brand || undefined,
+        condition: (p.condition as 'NEW' | 'LIKE_NEW' | 'GOOD' | 'FAIR') || undefined,
+        material: p.material || undefined,
+        origin: p.origin || undefined,
+        created_at: p.created_at.toISOString(),
     };
 }
 
 // Products API
 export async function getProducts(params?: URLSearchParams): Promise<PaginatedResponse<Product>> {
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-
-    let filtered = [...PRODUCTS];
+    const where: any = { is_active: true };
 
     if (params) {
         if (params.get('product_type')) {
-            const type = params.get('product_type');
-            filtered = filtered.filter(p => p.type === type);
+            where.product_type = params.get('product_type') as ProductType;
         }
-        // Ordering
-        const ordering = params.get('ordering');
-        if (ordering === 'price_usd') {
-            filtered.sort((a, b) => a.priceUSD - b.priceUSD);
-        } else if (ordering === '-price_usd') {
-            filtered.sort((a, b) => b.priceUSD - a.priceUSD);
+        if (params.get('is_featured') === 'true') {
+            where.is_featured = true;
         }
+        // Add more filters as needed
     }
 
-    const results = filtered.map(mapMockProduct);
+    const orderBy: any = {};
+    if (params?.get('ordering')) {
+        const ordering = params.get('ordering')!;
+        if (ordering === 'price_usd') orderBy.price_usd = 'asc';
+        if (ordering === '-price_usd') orderBy.price_usd = 'desc';
+        if (ordering === '-created_at') orderBy.created_at = 'desc';
+    } else {
+        orderBy.created_at = 'desc';
+    }
+
+    const [prismaProducts, total] = await db.$transaction([
+        db.product.findMany({
+            where,
+            orderBy,
+            include: { category: true },
+        }),
+        db.product.count({ where }),
+    ]);
+
+    const results = prismaProducts.map(mapPrismaProduct);
 
     return {
-        count: results.length,
+        count: total,
         next: null,
         previous: null,
         results,
@@ -83,18 +99,31 @@ export async function getProducts(params?: URLSearchParams): Promise<PaginatedRe
 }
 
 export async function getProduct(slug: string): Promise<Product | null> {
-    const p = PRODUCTS.find(p => p.slug === slug);
+    const p = await db.product.findUnique({
+        where: { slug },
+        include: { category: true },
+    });
+
     if (!p) return null;
-    return mapMockProduct(p);
+    return mapPrismaProduct(p);
 }
 
 export async function getFeaturedProducts(): Promise<Product[]> {
-    // Return random products or first 4
-    return PRODUCTS.slice(0, 4).map(mapMockProduct);
+    const products = await db.product.findMany({
+        where: { is_active: true, is_featured: true },
+        take: 4,
+        orderBy: { created_at: 'desc' },
+        include: { category: true },
+    });
+    return products.map(mapPrismaProduct);
 }
 
 export async function getConArteProducts(): Promise<Product[]> {
-    const products = PRODUCTS.filter(p => p.type === 'CRAFT');
-    return products.map(mapMockProduct);
+    const products = await db.product.findMany({
+        where: { is_active: true, product_type: 'CRAFT' },
+        orderBy: { created_at: 'desc' },
+        include: { category: true },
+    });
+    return products.map(mapPrismaProduct);
 }
 

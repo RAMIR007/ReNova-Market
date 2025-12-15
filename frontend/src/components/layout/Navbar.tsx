@@ -1,11 +1,23 @@
 "use client";
 
+import * as React from "react"
 import Link from "next/link"
-import { ShoppingBag, Search, Menu, User } from "lucide-react"
+import { ShoppingBag, Search, Menu, User, X } from "lucide-react"
 import { useCart } from "@/lib/cart-context";
 
 export function Navbar() {
     const { itemCount } = useCart();
+    const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+
+    const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+    const navLinks = [
+        { href: "/", label: "Inicio" },
+        { href: "/shop", label: "Tienda" },
+        { href: "/conarte", label: "ConArte", className: "text-amber-600 font-serif font-semibold" },
+        { href: "/stories", label: "Historias" },
+        { href: "/about", label: "Nosotros" },
+    ];
 
     return (
         <nav className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">
@@ -22,11 +34,15 @@ export function Navbar() {
 
                 {/* Desktop Nav */}
                 <div className="hidden md:flex items-center gap-8 text-sm font-medium text-muted-foreground">
-                    <Link href="/" className="transition-colors hover:text-primary">Inicio</Link>
-                    <Link href="/shop" className="transition-colors hover:text-primary">Tienda</Link>
-                    <Link href="/conarte" className="transition-colors hover:text-amber-600 font-serif font-semibold text-amber-700">ConArte</Link>
-                    <Link href="/stories" className="transition-colors hover:text-primary">Historias</Link>
-                    <Link href="/about" className="transition-colors hover:text-primary">Nosotros</Link>
+                    {navLinks.map((link) => (
+                        <Link
+                            key={link.href}
+                            href={link.href}
+                            className={`transition-colors hover:text-primary ${link.className || ''}`}
+                        >
+                            {link.label}
+                        </Link>
+                    ))}
                 </div>
 
                 {/* Actions */}
@@ -48,11 +64,33 @@ export function Navbar() {
                         <User className="h-5 w-5" />
                     </button>
 
-                    <button className="md:hidden text-muted-foreground hover:text-primary transition-colors">
-                        <Menu className="h-5 w-5" />
+                    {/* Mobile Menu Toggle */}
+                    <button
+                        className="md:hidden text-muted-foreground hover:text-primary transition-colors"
+                        onClick={toggleMenu}
+                    >
+                        {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
                     </button>
                 </div>
             </div>
+
+            {/* Mobile Menu Overlay */}
+            {isMenuOpen && (
+                <div className="md:hidden absolute top-16 left-0 w-full bg-background border-b border-border p-4 shadow-lg animate-in slide-in-from-top-2">
+                    <div className="flex flex-col space-y-4">
+                        {navLinks.map((link) => (
+                            <Link
+                                key={link.href}
+                                href={link.href}
+                                onClick={() => setIsMenuOpen(false)}
+                                className={`text-base font-medium transition-colors hover:text-primary ${link.className || ''}`}
+                            >
+                                {link.label}
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+            )}
         </nav>
     )
 }

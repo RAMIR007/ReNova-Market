@@ -48,8 +48,8 @@ export default async function ProductsPage({ searchParams }: { searchParams: { q
                 </div>
             </div>
 
-            <div className="border rounded-lg overflow-hidden bg-white dark:bg-card">
-                <table className="w-full text-sm text-left">
+            <div className="border rounded-lg overflow-x-auto bg-white dark:bg-card">
+                <table className="w-full text-sm text-left min-w-[600px]">
                     <thead className="bg-muted/50 text-muted-foreground font-medium border-b">
                         <tr>
                             <th className="px-4 py-3 w-[50px]">Img</th>

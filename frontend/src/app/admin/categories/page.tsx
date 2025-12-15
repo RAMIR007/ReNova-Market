@@ -30,8 +30,8 @@ export default async function CategoriesPage() {
                 </form>
             </div>
 
-            <div className="border rounded-lg overflow-hidden">
-                <table className="w-full text-sm text-left">
+            <div className="border rounded-lg overflow-x-auto">
+                <table className="w-full text-sm text-left min-w-[500px]">
                     <thead className="bg-muted/50 text-muted-foreground font-medium border-b">
                         <tr>
                             <th className="px-4 py-3">Nombre</th>
