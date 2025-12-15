@@ -74,6 +74,13 @@ export default function ImageUpload({
                     maxFiles: 1,
                     sources: ['local', 'url'],
                     clientAllowedFormats: ['png', 'jpeg', 'jpg', 'webp'],
+                    maxFileSize: 1500000, // 1.5MB limit enforced before upload
+                    maxImageWidth: 2000, // Resize large images before upload
+                    resourceType: 'image',
+                    // Client-side validation: Cloudinary widget can validate size/type before upload.
+                    // Note: True format conversion (e.g. force to WebP) implies Cloudinary transformation usage 
+                    // which consumes credits or is done on-the-fly. 
+                    // To save storage/credits, we limit the size of what gets uploaded.
                 }}
             >
                 {({ open }) => {
