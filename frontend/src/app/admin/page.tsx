@@ -1,79 +1,78 @@
-import { createProduct, deleteProduct } from "./actions";
+
+import Link from "next/link";
 import db from "@/lib/db";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { ShoppingBag, Tag, ShoppingCart, Users } from "lucide-react";
 
 export const dynamic = 'force-dynamic';
 
-export default async function AdminPage() {
-    const products = await db.product.findMany({
+export default async function AdminDashboard() {
+    const [productCount, categoryCount, orderCount, userCount] = await Promise.all([
+        db.product.count(),
+        db.category.count(),
+        db.order.count(),
+        db.user.count(),
+    ]);
+
+    const recentOrders = await db.order.findMany({
+        take: 5,
         orderBy: { created_at: 'desc' },
-        include: { category: true }
+        include: { user: true },
     });
 
     return (
-        <div className="container mx-auto py-12 px-4">
-            <h1 className="text-3xl font-bold mb-8">Panel de Administración</h1>
+        <div className="space-y-8">
+            <div>
+                <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+                <p className="text-muted-foreground">Bienvenido al panel de administración de ReNova Market.</p>
+            </div>
 
-            <div className="grid md:grid-cols-2 gap-12">
-                {/* Create Form */}
-                <div className="bg-card p-6 rounded-lg border shadow-sm h-fit">
-                    <h2 className="text-xl font-semibold mb-4">Añadir Producto</h2>
-                    <form action={createProduct} className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Nombre</label>
-                            <input name="name" required className="w-full p-2 border rounded bg-background" />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Descripción</label>
-                            <textarea name="description" required className="w-full p-2 border rounded bg-background" />
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium mb-1">Precio (USD)</label>
-                                <input name="price" type="number" step="0.01" required className="w-full p-2 border rounded bg-background" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium mb-1">Tipo</label>
-                                <select name="type" className="w-full p-2 border rounded bg-background">
-                                    <option value="FASHION">Moda</option>
-                                    <option value="CRAFT">Artesanía</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium mb-1">Categoría (Nombre)</label>
-                            <input name="category" required placeholder="Ej. Vestidos" className="w-full p-2 border rounded bg-background" />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium mb-1">URL de Imagen</label>
-                            <input name="image_url" placeholder="https://..." className="w-full p-2 border rounded bg-background" />
-                        </div>
-                        <button type="submit" className="w-full bg-primary text-primary-foreground py-2 rounded">
-                            Crear Producto
-                        </button>
-                    </form>
-                </div>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <DashboardCard title="Productos" value={productCount} icon={ShoppingBag} href="/admin/products" />
+                <DashboardCard title="Categorías" value={categoryCount} icon={Tag} href="/admin/categories" />
+                <DashboardCard title="Pedidos" value={orderCount} icon={ShoppingCart} href="/admin/orders" />
+                <DashboardCard title="Usuarios" value={userCount} icon={Users} href="/admin/users" />
+            </div>
 
-                {/* List */}
-                <div className="space-y-4">
-                    <h2 className="text-xl font-semibold mb-4">Inventario ({products.length})</h2>
-                    <div className="space-y-2">
-                        {products.map((p: any) => (
-                            <div key={p.id} className="flex justify-between items-center p-3 border rounded bg-card">
-                                <div>
-                                    <p className="font-medium">{p.name}</p>
-                                    <p className="text-xs text-muted-foreground">{p.category?.name} - ${p.price_usd.toString()}</p>
-                                </div>
-                                <form action={async () => {
-                                    'use server';
-                                    await deleteProduct(p.id);
-                                }}>
-                                    <button className="text-red-500 text-sm hover:underline">Eliminar</button>
-                                </form>
-                            </div>
-                        ))}
+            <div className="grid gap-4 md:grid-cols-2">
+                <div className="border rounded-lg bg-card p-6">
+                    <h3 className="font-semibold text-lg mb-4">Acciones Recientes</h3>
+                    <div className="text-sm text-muted-foreground">
+                        No hay logs de actividad implementados aún.
                     </div>
+                </div>
+                <div className="border rounded-lg bg-card p-6">
+                    <h3 className="font-semibold text-lg mb-4">Últimos Pedidos</h3>
+                    {recentOrders.length === 0 ? (
+                        <p className="text-sm text-muted-foreground">No hay pedidos recientes.</p>
+                    ) : (
+                        <ul className="space-y-3">
+                            {recentOrders.map((order: any) => (
+                                <li key={order.id} className="flex justify-between text-sm">
+                                    <span>Pedido #{order.id}</span>
+                                    <span className="font-medium">${Number(order.total_amount).toFixed(2)}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
             </div>
         </div>
+    );
+}
+
+function DashboardCard({ title, value, icon: Icon, href }: any) {
+    return (
+        <Link href={href}>
+            <div className="rounded-xl border bg-card text-card-foreground shadow-sm hover:bg-accent/50 transition-colors cursor-pointer">
+                <div className="p-6 flex flex-row items-center justify-between space-y-0 pb-2">
+                    <h3 className="tracking-tight text-sm font-medium">{title}</h3>
+                    <Icon className="h-4 w-4 text-muted-foreground" />
+                </div>
+                <div className="p-6 pt-0">
+                    <div className="text-2xl font-bold">{value}</div>
+                </div>
+            </div>
+        </Link>
     );
 }
