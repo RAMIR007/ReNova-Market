@@ -57,73 +57,92 @@ function mapPrismaProduct(p: PrismaProduct & { category: Category | null }): Pro
 
 // Products API
 export async function getProducts(params?: URLSearchParams): Promise<PaginatedResponse<Product>> {
-    const where: any = { is_active: true };
+    try {
+        const where: any = { is_active: true };
 
-    if (params) {
-        if (params.get('product_type')) {
-            where.product_type = params.get('product_type') as ProductType;
+        if (params) {
+            if (params.get('product_type')) {
+                where.product_type = params.get('product_type') as ProductType;
+            }
+            if (params.get('is_featured') === 'true') {
+                where.is_featured = true;
+            }
         }
-        if (params.get('is_featured') === 'true') {
-            where.is_featured = true;
+
+        const orderBy: any = {};
+        if (params?.get('ordering')) {
+            const ordering = params.get('ordering')!;
+            if (ordering === 'price_usd') orderBy.price_usd = 'asc';
+            if (ordering === '-price_usd') orderBy.price_usd = 'desc';
+            if (ordering === '-created_at') orderBy.created_at = 'desc';
+        } else {
+            orderBy.created_at = 'desc';
         }
-        // Add more filters as needed
+
+        const [prismaProducts, total] = await db.$transaction([
+            db.product.findMany({
+                where,
+                orderBy,
+                include: { category: true },
+            }),
+            db.product.count({ where }),
+        ]);
+
+        const results = prismaProducts.map(mapPrismaProduct);
+
+        return {
+            count: total,
+            next: null,
+            previous: null,
+            results,
+        };
+    } catch (error) {
+        console.error("Failed to fetch products:", error);
+        return { count: 0, next: null, previous: null, results: [] };
     }
-
-    const orderBy: any = {};
-    if (params?.get('ordering')) {
-        const ordering = params.get('ordering')!;
-        if (ordering === 'price_usd') orderBy.price_usd = 'asc';
-        if (ordering === '-price_usd') orderBy.price_usd = 'desc';
-        if (ordering === '-created_at') orderBy.created_at = 'desc';
-    } else {
-        orderBy.created_at = 'desc';
-    }
-
-    const [prismaProducts, total] = await db.$transaction([
-        db.product.findMany({
-            where,
-            orderBy,
-            include: { category: true },
-        }),
-        db.product.count({ where }),
-    ]);
-
-    const results = prismaProducts.map(mapPrismaProduct);
-
-    return {
-        count: total,
-        next: null,
-        previous: null,
-        results,
-    };
 }
 
 export async function getProduct(slug: string): Promise<Product | null> {
-    const p = await db.product.findUnique({
-        where: { slug },
-        include: { category: true },
-    });
+    try {
+        const p = await db.product.findUnique({
+            where: { slug },
+            include: { category: true },
+        });
 
-    if (!p) return null;
-    return mapPrismaProduct(p);
+        if (!p) return null;
+        return mapPrismaProduct(p);
+    } catch (error) {
+        console.error(`Failed to fetch product ${slug}:`, error);
+        return null;
+    }
 }
 
 export async function getFeaturedProducts(): Promise<Product[]> {
-    const products = await db.product.findMany({
-        where: { is_active: true, is_featured: true },
-        take: 4,
-        orderBy: { created_at: 'desc' },
-        include: { category: true },
-    });
-    return products.map(mapPrismaProduct);
+    try {
+        const products = await db.product.findMany({
+            where: { is_active: true, is_featured: true },
+            take: 4,
+            orderBy: { created_at: 'desc' },
+            include: { category: true },
+        });
+        return products.map(mapPrismaProduct);
+    } catch (error) {
+        console.error("Failed to fetch featured products:", error);
+        return [];
+    }
 }
 
 export async function getConArteProducts(): Promise<Product[]> {
-    const products = await db.product.findMany({
-        where: { is_active: true, product_type: 'CRAFT' },
-        orderBy: { created_at: 'desc' },
-        include: { category: true },
-    });
-    return products.map(mapPrismaProduct);
+    try {
+        const products = await db.product.findMany({
+            where: { is_active: true, product_type: 'CRAFT' },
+            orderBy: { created_at: 'desc' },
+            include: { category: true },
+        });
+        return products.map(mapPrismaProduct);
+    } catch (error) {
+        console.error("Failed to fetch ConArte products:", error);
+        return [];
+    }
 }
 

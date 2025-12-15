@@ -5,7 +5,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function UsersPage() {
     const users = await db.user.findMany({
-        orderBy: { date_joined: 'desc' }
+        orderBy: { created_at: 'desc' }
     });
 
     return (

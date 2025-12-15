@@ -2,8 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client"
-  output   = "../node_modules/@prisma/client"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -57,4 +56,26 @@ model Product {
 
   created_at   DateTime    @default(now())
   updated_at   DateTime    @updatedAt
+}
+
+model User {
+  id          Int      @id @default(autoincrement())
+  email       String   @unique
+  first_name  String?
+  last_name   String?
+  password    String?
+  is_staff    Boolean  @default(false)
+  orders      Order[]
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model Order {
+  id           Int      @id @default(autoincrement())
+  user_id      Int
+  user         User     @relation(fields: [user_id], references: [id])
+  total_amount Decimal  @db.Decimal(10, 2)
+  status       String   @default("PENDING") // PENDING, COMPLETED, CANCELLED
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
 }

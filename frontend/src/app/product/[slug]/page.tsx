@@ -5,6 +5,8 @@ import { getProduct } from "@/lib/api"; // Updated import
 import { ArrowLeft, ShoppingBag, Truck, ShieldCheck } from "lucide-react";
 import { AddToCartButton } from "@/components/products/AddToCartButton";
 
+export const dynamic = 'force-dynamic';
+
 export default async function ProductPage(props: {
     params: Promise<{ slug: string }>;
 }) {

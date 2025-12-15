@@ -31,7 +31,7 @@ export async function updateProduct(id: number, formData: FormData) {
             description,
             price_usd: price,
             product_type: type,
-            image,
+            image: typeof image === 'string' && image.length > 0 ? image : "https://images.unsplash.com/photo-1550989460-0adf9ea622e2?q=80&w=1000",
             category_id: category.id,
         }
     });
@@ -71,7 +71,7 @@ export async function createProduct(formData: FormData) {
             description,
             price_usd: price,
             product_type: type,
-            image,
+            image: typeof image === 'string' && image.length > 0 ? image : "https://images.unsplash.com/photo-1550989460-0adf9ea622e2?q=80&w=1000",
             category_id: category.id,
             stock: 1, // Default
         }
