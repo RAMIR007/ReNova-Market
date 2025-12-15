@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { notFound } from "next/navigation";
+import ProductImageFormItem from "@/components/admin/ProductImageFormItem";
 
 export const dynamic = 'force-dynamic';
 
@@ -72,8 +73,7 @@ export default async function EditProductPage({ params }: { params: { id: string
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium mb-2">URL de Imagen</label>
-                                <input name="image_url" defaultValue={product.image || ''} placeholder="https://..." className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
+                                <ProductImageFormItem initialValue={product.image} />
                             </div>
                         </div>
 

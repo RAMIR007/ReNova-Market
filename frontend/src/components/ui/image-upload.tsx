@@ -1,10 +1,10 @@
-
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { ImagePlus, Trash } from 'lucide-react';
 import Image from 'next/image';
+import { CldUploadWidget } from 'next-cloudinary';
 
 interface ImageUploadProps {
     disabled?: boolean;
@@ -21,18 +21,32 @@ export default function ImageUpload({
 }: ImageUploadProps) {
     const [isMounted, setIsMounted] = useState(false);
 
-    // Prevent hydration mismatch
-    useState(() => {
+    useEffect(() => {
         setIsMounted(true);
-    });
+    }, []);
+
+    const onUpload = (result: any) => {
+        if (result.info && result.info.secure_url) {
+            onChange(result.info.secure_url);
+        }
+    };
 
     if (!isMounted) return null;
 
     return (
         <div>
+            {/* Hidden Input for Form Submission */}
+            {value.length > 0 ? (
+                value.map((url, i) => (
+                    <input key={i} type="hidden" name="image_url" value={url} />
+                ))
+            ) : (
+                <input type="hidden" name="image_url" value="" />
+            )}
+
             <div className="mb-4 flex items-center gap-4">
                 {value.map((url) => (
-                    <div key={url} className="relative w-[200px] h-[200px] rounded-md overflow-hidden">
+                    <div key={url} className="relative w-[200px] h-[200px] rounded-md overflow-hidden bg-secondary border border-border">
                         <div className="z-10 absolute top-2 right-2">
                             <Button
                                 type="button"
@@ -52,25 +66,30 @@ export default function ImageUpload({
                     </div>
                 ))}
             </div>
-            {/** 
-             * NOTE: For MVP, we are using a simple URL input in the form.
-             * Real Cloudinary upload widget would use CLD Upload Widget scripts 
-             * or a server action to upload files.
-             * For now, this component is a visual placeholder for where the widget would go.
-             */}
-            <Button
-                type="button"
-                disabled={disabled}
-                variant="secondary"
-                onClick={() => {
-                    // In a real implementation this would open the widget
-                    const url = prompt("Enter Image URL (Simulating Cloudinary Upload):");
-                    if (url) onChange(url);
+
+            <CldUploadWidget
+                uploadPreset="RenovaMarket"
+                onSuccess={onUpload}
+                options={{
+                    maxFiles: 1,
+                    sources: ['local', 'url'],
+                    clientAllowedFormats: ['png', 'jpeg', 'jpg', 'webp'],
                 }}
             >
-                <ImagePlus className="h-4 w-4 mr-2" />
-                Upload an Image
-            </Button>
+                {({ open }) => {
+                    return (
+                        <Button
+                            type="button"
+                            disabled={disabled}
+                            variant="secondary"
+                            onClick={() => open()}
+                        >
+                            <ImagePlus className="h-4 w-4 mr-2" />
+                            Subir Imagen (Cloudinary)
+                        </Button>
+                    );
+                }}
+            </CldUploadWidget>
         </div>
     );
 }
