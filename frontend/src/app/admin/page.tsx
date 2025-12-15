@@ -57,7 +57,7 @@ export default async function AdminPage() {
                 <div className="space-y-4">
                     <h2 className="text-xl font-semibold mb-4">Inventario ({products.length})</h2>
                     <div className="space-y-2">
-                        {products.map(p => (
+                        {products.map((p: any) => (
                             <div key={p.id} className="flex justify-between items-center p-3 border rounded bg-card">
                                 <div>
                                     <p className="font-medium">{p.name}</p>
