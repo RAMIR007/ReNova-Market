@@ -57,6 +57,7 @@ model Product {
 
   created_at   DateTime    @default(now())
   updated_at   DateTime    @updatedAt
+  order_items  OrderItem[]
 }
 
 model User {
