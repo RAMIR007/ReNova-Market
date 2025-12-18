@@ -20,6 +20,12 @@ export default async function AdminDashboard() {
         include: { user: true },
     });
 
+    const lowStockProducts = await db.product.findMany({
+        where: { stock: { lt: 5 } },
+        take: 5,
+        orderBy: { stock: 'asc' }
+    });
+
     return (
         <div className="space-y-8">
             <div>
@@ -36,10 +42,23 @@ export default async function AdminDashboard() {
 
             <div className="grid gap-4 md:grid-cols-2">
                 <div className="border rounded-lg bg-card p-6">
-                    <h3 className="font-semibold text-lg mb-4">Acciones Recientes</h3>
-                    <div className="text-sm text-muted-foreground">
-                        No hay logs de actividad implementados aún.
-                    </div>
+                    <h3 className="font-semibold text-lg mb-4 text-red-600">Alerta de Stock Bajo</h3>
+                    {lowStockProducts.length === 0 ? (
+                        <p className="text-sm text-muted-foreground">Todos los productos tienen buen stock.</p>
+                    ) : (
+                        <ul className="space-y-3">
+                            {lowStockProducts.map((p: any) => (
+                                <li key={p.id} className="flex justify-between items-center text-sm">
+                                    <Link href={`/admin/products/${p.id}`} className="hover:underline truncate max-w-[200px]">
+                                        {p.name}
+                                    </Link>
+                                    <span className="font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded-full text-xs">
+                                        {p.stock} unid.
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
                 <div className="border rounded-lg bg-card p-6">
                     <h3 className="font-semibold text-lg mb-4">Últimos Pedidos</h3>

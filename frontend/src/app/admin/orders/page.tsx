@@ -1,6 +1,7 @@
 
 import db from "@/lib/db";
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export const dynamic = 'force-dynamic';
 
@@ -39,7 +40,9 @@ export default async function OrdersPage() {
                                     </span>
                                 </td>
                                 <td className="px-4 py-3 text-right">
-                                    <Button variant="ghost" size="sm">Ver Detalles</Button>
+                                    <Link href={`/admin/orders/${order.id}`}>
+                                        <Button variant="ghost" size="sm">Ver Detalles</Button>
+                                    </Link>
                                 </td>
                             </tr>
                         ))}

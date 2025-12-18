@@ -3,12 +3,14 @@
 import db from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 
 // ... createProduct function
 
 export async function updateProduct(id: number, formData: FormData) {
     const name = formData.get("name") as string;
     const price = parseFloat(formData.get("price") as string);
+    const cost = formData.get("cost") ? parseFloat(formData.get("cost") as string) : null;
     const description = formData.get("description") as string;
     const type = formData.get("type") as 'FASHION' | 'CRAFT';
     const categoryName = formData.get("category") as string;
@@ -30,6 +32,7 @@ export async function updateProduct(id: number, formData: FormData) {
             name,
             description,
             price_usd: price,
+            cost: cost,
             product_type: type,
             image: typeof image === 'string' && image.length > 0 ? image : "https://images.unsplash.com/photo-1550989460-0adf9ea622e2?q=80&w=1000",
             category_id: category.id,
@@ -46,6 +49,7 @@ export async function createProduct(formData: FormData) {
     // ... existing content (I'll just let it be, but I need to make sure I don't break it)
     const name = formData.get("name") as string;
     const price = parseFloat(formData.get("price") as string);
+    const cost = formData.get("cost") ? parseFloat(formData.get("cost") as string) : null;
     const description = formData.get("description") as string;
     const type = formData.get("type") as 'FASHION' | 'CRAFT';
     const categoryName = formData.get("category") as string;
@@ -70,6 +74,7 @@ export async function createProduct(formData: FormData) {
             slug: name.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now(),
             description,
             price_usd: price,
+            cost: cost,
             product_type: type,
             image: typeof image === 'string' && image.length > 0 ? image : "https://images.unsplash.com/photo-1550989460-0adf9ea622e2?q=80&w=1000",
             category_id: category.id,
@@ -116,3 +121,38 @@ export async function deleteCategory(id: number) {
         console.error("Failed to delete category", e);
     }
 }
+
+export async function login(formData: FormData) {
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    // TODO: Implement proper database auth with password hashing
+    // For now, using hardcoded credentials as requested for security improvement
+    if (email === "admin@renova.com" && password === "admin123") {
+        const cookieStore = await cookies();
+        cookieStore.set("admin_session", "true", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            maxAge: 60 * 60 * 24, // 1 day
+            path: "/",
+        });
+        redirect("/admin");
+    } else {
+        redirect("/admin/login?error=InvalidCredentials");
+    }
+}
+
+export async function updateOrderStatus(formData: FormData) {
+    const id = parseInt(formData.get("id") as string);
+    const status = formData.get("status") as string;
+
+    await db.order.update({
+        where: { id },
+        data: { status }
+    });
+
+    revalidatePath(`/admin/orders/${id}`);
+    revalidatePath('/admin/orders');
+    revalidatePath('/admin');
+}
+

@@ -56,6 +56,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: { q
                             <th className="px-4 py-3">Nombre</th>
                             <th className="px-4 py-3">Categoría</th>
                             <th className="px-4 py-3">Precio</th>
+                            <th className="px-4 py-3">Costo</th>
                             <th className="px-4 py-3">Stock</th>
                             <th className="px-4 py-3">Estado</th>
                             <th className="px-4 py-3 text-right">Acciones</th>
@@ -76,6 +77,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: { q
                                 </td>
                                 <td className="px-4 py-3 text-muted-foreground">{p.category?.name || '-'}</td>
                                 <td className="px-4 py-3">${Number(p.price_usd).toFixed(2)}</td>
+                                <td className="px-4 py-3">{p.cost ? `$${Number(p.cost).toFixed(2)}` : '-'}</td>
                                 <td className="px-4 py-3">{p.stock}</td>
                                 <td className="px-4 py-3">
                                     <span className={`px-2 py-0.5 rounded-full text-xs ${p.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>

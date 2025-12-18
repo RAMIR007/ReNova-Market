@@ -56,6 +56,11 @@ export default async function EditProductPage({ params }: { params: { id: string
                             </div>
 
                             <div>
+                                <label className="block text-sm font-medium mb-2">Costo (Visible solo para admin)</label>
+                                <input name="cost" defaultValue={product.cost ? Number(product.cost) : ''} type="number" step="0.01" className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm" placeholder="Ej: 15.00" />
+                            </div>
+
+                            <div>
                                 <label className="block text-sm font-medium mb-2">Tipo de Producto</label>
                                 <select name="type" defaultValue={product.product_type} className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm">
                                     <option value="FASHION">Moda / Ropa</option>

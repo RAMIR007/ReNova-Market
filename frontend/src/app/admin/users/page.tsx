@@ -26,7 +26,7 @@ export default async function UsersPage() {
                             <tr key={user.id} className="hover:bg-muted/10">
                                 <td className="px-4 py-3 font-medium">{user.email}</td>
                                 <td className="px-4 py-3">{user.first_name} {user.last_name}</td>
-                                <td className="px-4 py-3">{new Date(user.date_joined).toLocaleDateString()}</td>
+                                <td className="px-4 py-3">{new Date(user.created_at).toLocaleDateString()}</td>
                                 <td className="px-4 py-3">{user.is_staff ? 'Sí' : 'No'}</td>
                             </tr>
                         ))}
