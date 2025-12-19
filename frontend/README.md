@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ReNova Market - E-Commerce Platform
 
-## Getting Started
+ReNova Market is a modern e-commerce platform built with Next.js, tailored for the Cuban market. It features a robust administration panel, dynamic product management, and a user-friendly shopping experience.
 
-First, run the development server:
+## 🚀 Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### 🛍️ User Experience (Storefront)
+- **Modern UI/UX**: Responsive design with a clean, "Apple-like" aesthetic.
+- **Product Catalog**: Browse products by category (Fashion, Crafts/ConArte, etc.).
+- **Product Details**: View detailed product information including price, descriptions, and high-quality images.
+- **Shopping Cart**: (In Progress) Functionality to add items and manage cart.
+- **Stories**: Instagram-like stories features for showcasing products.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 🛡️ Administration Panel (/admin)
+The platform includes a comprehensive admin dashboard protected by authentication.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Dashboard**:
+  - **Overview**: Real-time stats for Products, Categories, Orders, and Users.
+  - **Low Stock Alerts**: Automatic alerts for products running low on inventory (< 5 units).
+  - **Recent Orders**: Quick view of the latest purchases.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Product Management**:
+  - **CRUD Operations**: Create, Read, Update, and Delete products.
+  - **Cost Tracking**: Special field for product cost (visible only to admins) to calculate margins.
+  - **Image Management**: Support for external image URLs.
+  - **Categorization**: Assign products to dynamic categories.
 
-## Learn More
+- **Order Management**:
+  - **Full Lifecycle**: View orders and manage status (Pending -> Shipped -> Completed -> Cancelled).
+  - **Detailed View**: Inspect order items, customer details, and total amounts.
+  - **Visual Feedback**: Color-coded status badges.
 
-To learn more about Next.js, take a look at the following resources:
+- **Category Management**: Create and delete product categories.
+- **User Management**: View registered users and their details.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🔑 Admin Credentials
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+To access the administration panel, go to `/admin` and use the following credentials:
+> **Note**: These are default credentials for the development environment. Change them for production.
 
-## Deploy on Vercel
+- **URL**: `http://localhost:3000/admin`
+- **Email**: `admin@renova.com`
+- **Password**: `admin123`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🛠️ Tech Stack
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Framework**: Next.js 15 (App Router)
+- **Language**: TypeScript
+- **Database**: PostgreSQL (via Neon DB)
+- **ORM**: Prisma
+- **Styling**: Tailwind CSS / Vanilla CSS
+- **UI Components**: Lucide React Icons
+
+## 📦 Getting Started
+
+1. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+
+2. **Database Setup**:
+   Ensure your `.env` file is configured with your `DATABASE_URL`.
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
+
+3. **Run Development Server**:
+   ```bash
+   npm run dev
+   ```
+
+4. **Build for Production**:
+   ```bash
+   npm run build
+   ```

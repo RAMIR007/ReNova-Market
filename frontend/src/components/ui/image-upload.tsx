@@ -33,6 +33,14 @@ export default function ImageUpload({
 
     if (!isMounted) return null;
 
+    if (!process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME) {
+        return (
+            <div className="p-4 border border-red-200 bg-red-50 text-red-700 rounded-md">
+                Error: Cloudinary Cloud Name not found. Check .env
+            </div>
+        );
+    }
+
     return (
         <div>
             {/* Hidden Input for Form Submission */}
@@ -68,7 +76,7 @@ export default function ImageUpload({
             </div>
 
             <CldUploadWidget
-                uploadPreset="RenovaMarket"
+                uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "RenovaMarket"}
                 onSuccess={onUpload}
                 options={{
                     maxFiles: 1,
